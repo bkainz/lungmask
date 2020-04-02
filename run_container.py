@@ -3,12 +3,22 @@ import argparse
 import yaml
 import os
 
+def validate_output(output):
+
+    split = os.path.split(output)
+
+    if '.' not in split[1]:
+        print("Output argument needs to be a filename, not a directory")
+        exit()
+
+    return split
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="LungMask")
 
-    parser.add_argument('-o', '--output', required=True, type=str, help="Host path to output directory")
-    parser.add_argument('-s', '--source', default="", type=str, help="(Optional) Host path to source volume directory")
+    parser.add_argument('-o', '--output', required=True, type=str, help="Host path to output filename (file not directory")
+    parser.add_argument('-s', '--source', default="", type=str, help="Host path to source volume directory")
     parser.add_argument('-m', '--model', default="", type=str, help="Select model: only R231, LTRCLobes or R231CovidWeb")
     parser.add_argument('--debug', action='store_true', help="Select this for container to not perform any computation")
 
@@ -23,7 +33,10 @@ if __name__ == "__main__":
         dc = yaml.load(docker_compose_file)
 
         source = '{}:/home/source'.format(args.source)
-        output = '{}:/home/output'.format(args.output)
+
+        output_dir, output_filename = validate_output(args.output)
+
+        output = '{}:/home/output'.format(output_dir)
 
         volumes = [source, output]
 
@@ -32,7 +45,7 @@ if __name__ == "__main__":
         if args.debug:
             dc['services']['lungmask']['command'] = 'tail -F anything'
 
-        environment = ["DEBUG={}".format(args.debug)]
+        environment = ["DEBUG={}".format(args.debug), "OUTPUT_NAME={}".format(output_filename)]
 
         # add MODEL environment variable
         if args.model != "":
