@@ -15,8 +15,8 @@ RUN apt-get install -y locales && \
     locale-gen en_US.UTF-8 && \
     pip3 install git+https://github.com/JoHof/lungmask
 
-COPY start.py /app/
-COPY load_models.py /app/
-
 # Loading all three Unet models - R231, LTRCLobes and R231CovidWeb
+COPY load_models.py /app/
 RUN python3 /app/load_models.py
+
+COPY start.py /app/
