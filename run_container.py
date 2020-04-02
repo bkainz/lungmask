@@ -8,8 +8,7 @@ def validate_output(output):
     split = os.path.split(output)
 
     if '.' not in split[1]:
-        print("Output argument needs to be a filename, not a directory")
-        exit()
+        return output, "output.nii.gz"
 
     return split
 
@@ -17,7 +16,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="LungMask")
 
-    parser.add_argument('-o', '--output', required=True, type=str, help="Host path to output filename (file not directory")
+    parser.add_argument('-o', '--output', required=True, type=str, help="Host path to output directory or filename")
     parser.add_argument('-s', '--source', default="", type=str, help="Host path to source volume directory")
     parser.add_argument('-m', '--model', default="", type=str, help="Select model: only R231, LTRCLobes or R231CovidWeb")
     parser.add_argument('--debug', action='store_true', help="Select this for container to not perform any computation")
