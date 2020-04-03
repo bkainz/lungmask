@@ -51,7 +51,8 @@ def apply(image, model=None, bar=None, force_cpu=False, batch_size=20, volume_po
             prediction = model(X)
             pls = torch.max(prediction,1)[1].detach().cpu().numpy().astype(np.uint8)
             timage_res = np.vstack((timage_res, pls))
-            bar.progress((i+1)/len(dataloader_val))
+            if bar is not None:
+                bar.progress((i+1)/len(dataloader_val))
 
     # postprocessing includes removal of small connected components, hole filling and mapping of small components to
     # neighbors
