@@ -19,6 +19,7 @@ from pydicom.pixel_data_handlers import gdcm_handler, pillow_handler
 #import gdcm #big problem in virutal environments
 
 
+
 def get_files(connection, project, subject, session, scan, resource):
     xnat_project = project#connection.projects[project]
     xnat_subject = subject#xnat_project.subjects[subject]
@@ -29,7 +30,6 @@ def get_files(connection, project, subject, session, scan, resource):
 
 
 if __name__ == "__main__":
-
     print(sys.version)
     #lung = Image.open("lung.png").resize((500, 500))
     #seg = Image.open("seg.png").resize((500, 500))

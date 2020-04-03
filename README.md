@@ -77,4 +77,35 @@ lungmask INPUT OUTPUT --modelname R231CovidWeb
 The regular U-net(R231) model works very well for COVID-19 CT scans. However, collections of slices and case reports from the web are often cropped, annotated or encoded in regular image formats so that the original hounsfield unit (HU) values can only be estimated. The training data of the U-net(R231CovidWeb) model was augmented with COVID-19 slices that were mapped back from regular imaging formats to HU. The data was collected and prepared by MedSeg (http://medicalsegmentation.com/covid19/). While the regular U-net(231) showed very good results for these images there may be cases for which this model will yield slighty improved segmentations. Note that you have to map images back to HU when using images from the web. This [blog post](https://medium.com/@hbjenssen/covid-19-radiology-data-collection-and-preparation-for-artificial-intelligence-4ecece97bb5b) describes how you can do that 
 ![alt text](figures/example_covid.jpg "COVID examples")
 
- 
+## Docker Container Usage
+
+Run `run_container.py` to run `lungmask`. This container comes with `UNet` models`R231`, `LTRCLobes` and `R231CovidWeb` already
+loaded, which can be chosen via command line.
+
+`--source` and `--output` paths are required. `--source` specifies where the `.dcm` files are to be found.
+
+`--source` must point to a directory (i.e. `./source` not `./source/0001.dcm`)
+whereas `--output` can point to both a directory or a complete filename (`./output` or `./output/out.nii.gz`)
+
+```
+
+  -o OUTPUT, --output OUTPUT
+                        Host path to output directory or filename
+  -s SOURCE, --source SOURCE
+                        Host path to source volume directory
+  -m MODEL, --model MODEL
+                        Select model: only R231, LTRCLobes or R231CovidWeb
+  --debug               Select this for container to not perform any
+
+```
+### Example use-case
+
+LungMask with default model
+```
+python3 run_container.py --source ./source_volume/ --output ./output/mask.nii.gz
+```
+
+LungMask with custom model
+```
+python3 run_container.py --source ./source_volume/ --output ./output/mask.nii.gz --model LTRCLobes
+```
