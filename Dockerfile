@@ -13,7 +13,7 @@ RUN pip3 install setuptools pip --upgrade --force-reinstall
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
 RUN apt-get install -y locales && \
     locale-gen en_US.UTF-8 && \
-    pip3 install git+https://github.com/JoHof/lungmask
+    pip3 install git+https://github.com/bkainz/lungmask
 
 # Loading all three Unet models - R231, LTRCLobes and R231CovidWeb
 COPY load_models.py /app/
