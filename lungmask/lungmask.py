@@ -17,7 +17,7 @@ model_urls = {('unet','R231'): ('https://github.com/JoHof/lungmask/releases/down
 ('unet','R231CovidWeb'): ('https://github.com/JoHof/lungmask/releases/download/v0.0/unet_r231covid-0de78a7e.pth',3)}
 
 
-def apply(image, model=None, force_cpu=False, batch_size=20, volume_postprocessing=True, show_process=True):
+def apply(image, model=None, bar=None, force_cpu=False, batch_size=20, volume_postprocessing=True, show_process=True):
 
     if model is None:
         model = get_model('unet', 'R231')
@@ -46,11 +46,12 @@ def apply(image, model=None, force_cpu=False, batch_size=20, volume_postprocessi
     timage_res = np.empty((np.append(0,tvolslices[0].shape)), dtype=np.uint8)
 
     with torch.no_grad():
-        for X in tqdm(dataloader_val):
+        for i, X in enumerate(tqdm(dataloader_val)):
             X = X.float().to(device)
             prediction = model(X)
             pls = torch.max(prediction,1)[1].detach().cpu().numpy().astype(np.uint8)
             timage_res = np.vstack((timage_res, pls))
+            bar.progress((i+1)/len(dataloader_val))
 
     # postprocessing includes removal of small connected components, hole filling and mapping of small components to
     # neighbors

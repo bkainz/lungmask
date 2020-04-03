@@ -111,6 +111,7 @@ if __name__ == "__main__":
                 break
             bar.progress(100)
 
+            st.text('Analysis progress...')
             bar2 = st.progress(0)
             model = lungmask.get_model('unet', 'R231CovidWeb')
             input_image = utils.get_input_image(download_dir)
@@ -120,7 +121,7 @@ if __name__ == "__main__":
 
             print(input_image.GetSpacing())
             spx, spy, spz = input_image.GetSpacing()
-            result = lungmask.apply(input_image, model, force_cpu=True, batch_size=20, volume_postprocessing=False)
+            result = lungmask.apply(input_image, model, bar2, force_cpu=True, batch_size=20, volume_postprocessing=False)
 
             result_out = sitk.GetImageFromArray(result)
             result_out.CopyInformation(input_image)
@@ -143,7 +144,7 @@ if __name__ == "__main__":
                 im = input_nda[i,:,:]   
                 im = Image.fromarray(im).convert('RGB')
                 imgs.append(im.resize((200, 200)))
-                im = output_nda[i,:,:] * 128  
+                im = output_nda[i,:,:] * 255  
                 im = Image.fromarray(im).convert('RGB')
                 imgs.append(im.resize((200, 200)))
 
