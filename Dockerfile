@@ -24,7 +24,7 @@ RUN pip3 install sklearn
 RUN pip3 install xnat
 RUN pip3 install dicom2nifti
 
-COPY start.py /app/main.py
+COPY start.py /app/start.py
 COPY main.py /app/main.py
 COPY lung.png /app/lung.png
 COPY seg.png /app/seg.png
