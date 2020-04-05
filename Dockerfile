@@ -26,5 +26,7 @@ RUN pip3 install dicom2nifti
 
 COPY start.py /app/start.py
 COPY main.py /app/main.py
+COPY plotter/__init__.py /app/plotter/__init__.py
+COPY plotter/generateHUplots.py /app/plotter/generateHUplots.py
 COPY lung.png /app/lung.png
 COPY seg.png /app/seg.png

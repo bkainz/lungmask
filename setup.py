@@ -6,12 +6,12 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name="lungmask",
     version="0.2.1",
-    author="Johannes Hofmanninger",
+    author="Johannes Hofmanninger, extended by Bernhard Kainz and Andrei Serbanescu",
     author_email="johannes.hofmanninger@meduniwien.ac.at",
     description="Package for automated lung segmentation in CT",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/JoHof/lungmask",
+    url="https://github.com/bkainz/lungmask",
     packages=setuptools.find_packages(),
     entry_points={
         'console_scripts': [

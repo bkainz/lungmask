@@ -48,7 +48,6 @@ if __name__ == "__main__":
     print(sys.version)
     #lung = Image.open("lung.png").resize((500, 500))
     #seg = Image.open("seg.png").resize((500, 500))
-    HUperc = Image.open("HUpercentile.png").resize((500, 500))
 
     #### Page Header #####
     # st.title("CoCaCoLA - The Cool Calculator for Corona Lung Assessment")
