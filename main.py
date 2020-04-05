@@ -161,11 +161,16 @@ if __name__ == "__main__":
                 [https://arxiv.org/abs/2001.11767](https://arxiv.org/abs/2001.11767)')
 
             imgs = []
+            cm = plt.get_cmap('gray')
+            cm_hot = plt.get_cmap('inferno') #copper
             for i in range(zd):
-                im = input_nda[i,:,:]   
+                mskmax = input_nda[output_nda > 0].max()
+                mskmin = input_nda[output_nda > 0].min()
+                im = (input_nda[i,:,:].astype(float) - mskmin) * (1.0/(mskmax - mskmin))
+                im = np.uint8(cm(im) * 255)   
                 im = Image.fromarray(im).convert('RGB')
                 imgs.append(im.resize((200, 200)))
-                im = output_nda[i,:,:] * 255  
+                im = np.uint8(cm_hot(output_nda[i,:,:].astype(float) / output_nda[i,:,:].astype(float).max()) * 255)  
                 im = Image.fromarray(im).convert('RGB')
                 imgs.append(im.resize((200, 200)))
 
