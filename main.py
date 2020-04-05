@@ -143,6 +143,7 @@ if __name__ == "__main__":
             bar2.progress(100)
 
             output_nda = sitk.GetArrayFromImage(result_out)
+            st.header("HU distribution:")
             generateHUplots.generateHUPlots(input_nda, output_nda, 2)
         
             right = np.count_nonzero(output_nda==1)*spx*spy*spz
