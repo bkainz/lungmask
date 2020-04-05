@@ -16,8 +16,23 @@ from lungmask import utils
 from pathlib import Path
 import dicom2nifti
 from pydicom.pixel_data_handlers import gdcm_handler, pillow_handler
+from matplotlib import pyplot as plt
 #import gdcm #big problem in virutal environments
+from plotter import generateHUplots
 
+def analyze(img, msk, num_thresholds = 100):
+
+    X = img[msk].flatten()
+    X = X[X>-1024]
+    num_pts = len(X.flatten())
+
+    min_hu = -1024
+    max_hu = 500
+    step = (max_hu - min_hu) / num_thresholds
+    thresholds = list(np.arange(min_hu+step, max_hu+step, step))
+    counts = [len(X[X < t].flatten()) / num_pts for t in thresholds] 
+    
+    return counts, thresholds
 
 
 def get_files(connection, project, subject, session, scan, resource):
@@ -33,6 +48,7 @@ if __name__ == "__main__":
     print(sys.version)
     #lung = Image.open("lung.png").resize((500, 500))
     #seg = Image.open("seg.png").resize((500, 500))
+    HUperc = Image.open("HUpercentile.png").resize((500, 500))
 
     #### Page Header #####
     # st.title("CoCaCoLA - The Cool Calculator for Corona Lung Assessment")
@@ -70,14 +86,14 @@ if __name__ == "__main__":
     ldh = st.sidebar.number_input("LDH", min_value=0, max_value=5000, step=10, value=240)
     ##### Sidebar ######
 
-
     ##### File Selector #####
     #TODO upload of several (DICOM) files needs the streamlit dev version, which is difficult to use
-    #st.header("Please Upload the Chest CT DICOM here")
-    #st.file_uploader(label="", type=["dcm", "dicom"])
+    #st.header("Please Upload the Chest CT Nifti here")
+    #st.file_uploader(label="", type=["nii", "nii.gz"])
     ##### File Selector #####
 
     ##### XNAT connection #####
+    #this is behind a VPN so you need to connect your own XNAT
     with xnat.connect('http://armada.doc.ic.ac.uk/xnat-web-1.7.6', user="admin", password="admin") as session:
 
         pn = [x.name for x in session.projects.values()]
@@ -119,7 +135,6 @@ if __name__ == "__main__":
             print(input_nda.shape)
             zd, yd, xd = input_nda.shape
 
-            print(input_image.GetSpacing())
             spx, spy, spz = input_image.GetSpacing()
             result = lungmask.apply(input_image, model, bar2, force_cpu=False, batch_size=20, volume_postprocessing=False)
 
@@ -129,7 +144,8 @@ if __name__ == "__main__":
             bar2.progress(100)
 
             output_nda = sitk.GetArrayFromImage(result_out)
-
+            generateHUplots.generateHUPlots(input_nda, output_nda, 2)
+        
             right = np.count_nonzero(output_nda==1)*spx*spy*spz
             left = np.count_nonzero(output_nda==2)*spx*spy*spz
             print(right)
@@ -138,6 +154,11 @@ if __name__ == "__main__":
             st.header("Result:")
             st.header(f'right lung: {right} mm\N{SUPERSCRIPT THREE}')
             st.header(f'left lung: {left} mm\N{SUPERSCRIPT THREE}')
+
+            st.markdown('**Segmentation by:** Johannes Hofmanninger, Forian Prayer, Jeanny Pan, Sebastian Röhrich, \
+                Helmut Prosch and Georg Langs. "Automatic lung segmentation in routine imaging \
+                is a data diversity problem, not a methodology problem". 1 2020, \
+                [https://arxiv.org/abs/2001.11767](https://arxiv.org/abs/2001.11767)')
 
             imgs = []
             for i in range(zd):
