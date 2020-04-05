@@ -170,10 +170,10 @@ if __name__ == "__main__":
                 im = (input_nda[i,:,:].astype(float) - mskmin) * (1.0/(mskmax - mskmin))
                 im = np.uint8(cm(im) * 255)   
                 im = Image.fromarray(im).convert('RGB')
-                imgs.append(im.resize((200, 200)))
+                imgs.append(im.resize((150, 150)))
                 im = np.uint8(cm_hot(output_nda[i,:,:].astype(float) / num_labels) * 255)  
                 im = Image.fromarray(im).convert('RGB')
-                imgs.append(im.resize((200, 200)))
+                imgs.append(im.resize((150, 150)))
 
             st.image(imgs)
 
