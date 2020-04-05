@@ -160,6 +160,7 @@ if __name__ == "__main__":
                 is a data diversity problem, not a methodology problem". 1 2020, \
                 [https://arxiv.org/abs/2001.11767](https://arxiv.org/abs/2001.11767)')
 
+            num_labels = output_nda.max()
             imgs = []
             cm = plt.get_cmap('gray')
             cm_hot = plt.get_cmap('inferno') #copper
@@ -170,7 +171,7 @@ if __name__ == "__main__":
                 im = np.uint8(cm(im) * 255)   
                 im = Image.fromarray(im).convert('RGB')
                 imgs.append(im.resize((200, 200)))
-                im = np.uint8(cm_hot(output_nda[i,:,:].astype(float) / output_nda[i,:,:].astype(float).max()) * 255)  
+                im = np.uint8(cm_hot(output_nda[i,:,:].astype(float) / num_labels) * 255)  
                 im = Image.fromarray(im).convert('RGB')
                 imgs.append(im.resize((200, 200)))
 
